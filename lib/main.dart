@@ -7,10 +7,10 @@ void main() => runApp(MyApp());
 enum States { Fechada, Aberta, Abrindo, Fechando }
 
 class MyApp extends StatelessWidget {
-  StreamController<String> _controller = new StreamController();
+  final StreamController<String> _controller = new StreamController();
   States currentState = States.Fechada;
 
-  StreamController<States> _stateController = new StreamController();
+  final StreamController<States> _stateController = new StreamController();
 
   @override
   Widget build(BuildContext context) {
