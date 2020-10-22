@@ -39,8 +39,8 @@ class _HomePage2State extends State<HomePage2> {
             ),
             Column(
               children: [
-                StreamBuilder<Stream<String>>(
-                  initialData: stateMachine.onStateChange
+                StreamBuilder<String>(
+                  stream: stateMachine.onStateChange
                       .map((event) => event.toString()),
                   builder: (context, snapshot) {
                     return Text(snapshot.data);
