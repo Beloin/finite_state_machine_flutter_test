@@ -26,42 +26,85 @@ class _InputStatePageState extends State<InputStatePage> {
     var toRec = stateMachine.newStateTransition('toRec', [isIdle], isRec);
     var toHora1 = stateMachine.newStateTransition('toHora1', [isIdle], isHora1);
     var toHora2 = stateMachine.newStateTransition('toHora2', [isIdle], isHora2);
-    var toBateria = stateMachine.newStateTransition('toBateria',
-        [isRec, isHora1, isHora2, isBateria, isBateria], isBateria);
+    var toBateria = stateMachine.newStateTransition(
+        'toBateria', [isRec, isHora1, isHora2, isIdle, isBateria], isBateria);
 
     stateMachine.start(isIdle);
 
     StreamController<String> _errorStream = new StreamController();
 
-    List<stm.StateTransition> transicoes = [
-      toIdle,
-      toRec,
-      toHora1,
-      toHora2,
-      toBateria
-    ];
+    StreamController _valuesController = new StreamController();
+
+    _valuesController.stream.listen((event) {
+      try {
+        switch (event as String) {
+          case 'R':
+            toRec();
+            break;
+          case 'H1':
+            toHora1();
+            break;
+          case 'H2':
+            toHora2();
+            break;
+          case 'B':
+            toBateria();
+            break;
+          case 'I':
+            toIdle();
+            break;
+          default:
+            throw Exception('Wrong Value informed');
+        }
+        _errorStream.add('');
+      } on stm.IllegalStateTransition catch (e) {
+        _errorStream.add(e.message);
+      }
+    });
 
     return new Scaffold(
       appBar: new AppBar(
         title: new Text('State machine + Inputs'),
       ),
       body: new Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          new ListView.builder(
-            itemCount: transicoes.length,
-            itemBuilder: (context, index) => new FlatButton(
-              onPressed: () {
-                try {
-                  transicoes[index]();
-                  _errorStream.add('');
-                } on stm.IllegalStateTransition catch (e) {
-                  _errorStream.add(e.message);
-                }
-              },
-              child: new Text(transicoes[index].name),
-            ),
-          ),
-          new Row(),
+          new SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: new Row(
+                children: [
+                  new FlatButton(
+                    onPressed: () {
+                      _valuesController.add('R');
+                    },
+                    child: new Text('Add Reconheceu'),
+                  ),
+                  new FlatButton(
+                    onPressed: () {
+                      _valuesController.add('H1');
+                    },
+                    child: new Text('Add Hora1'),
+                  ),
+                  new FlatButton(
+                    onPressed: () {
+                      _valuesController.add('H2');
+                    },
+                    child: new Text('Add Hora2'),
+                  ),
+                  new FlatButton(
+                    onPressed: () {
+                      _valuesController.add('B');
+                    },
+                    child: new Text('Add Bateria'),
+                  ),
+                  new FlatButton(
+                    onPressed: () {
+                      _valuesController.add('I');
+                    },
+                    child: new Text('Back to Idle'),
+                  ),
+                ],
+              )),
           new StreamBuilder<String>(
             initialData: 'Closed',
             stream:

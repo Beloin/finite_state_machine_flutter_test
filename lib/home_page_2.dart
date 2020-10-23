@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:finite_state_machine_test/input_state_page.dart';
 import 'package:flutter/material.dart';
 import 'package:state_machine/state_machine.dart' as stm;
 
@@ -30,8 +31,18 @@ class _HomePage2State extends State<HomePage2> {
       appBar: AppBar(
         title: Text(
           'Porta State Machine - State Machine',
-          style: TextStyle(fontSize: MediaQuery.of(context).size.height * .02),
+          style: TextStyle(fontSize: MediaQuery.of(context).size.height * .019),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.arrow_forward_ios),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => InputStatePage(),
+              ),
+            ),
+          ),
+        ],
       ),
       body: Center(
         child: Column(
