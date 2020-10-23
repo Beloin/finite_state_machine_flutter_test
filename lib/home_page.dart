@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import 'home_page_2.dart';
+
 enum States { Fechada, Aberta, Abrindo, Fechando }
 
 class HomePage extends StatefulWidget {
@@ -28,7 +30,17 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Porta State Machine'),
+        title: Text('Porta State Machine - Bruta'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.arrow_forward_ios),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => HomePage2(),
+              ),
+            ),
+          ),
+        ],
       ),
       body: Center(
         child: Row(

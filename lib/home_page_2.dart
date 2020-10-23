@@ -1,4 +1,4 @@
-import 'dart:html';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:state_machine/state_machine.dart' as stm;
@@ -20,33 +20,77 @@ class _HomePage2State extends State<HomePage2> {
     stm.StateTransition close =
         stateMachine.newStateTransition('close', [isOpen], isClosed);
     stm.StateTransition open =
-        stateMachine.newStateTransition('open', [isClosed], isClosed);
+        stateMachine.newStateTransition('open', [isClosed], isOpen);
+
+    stateMachine.start(isClosed);
+
+    StreamController<String> _errorStream = new StreamController();
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Porta State Machine'),
+        title: Text(
+          'Porta State Machine - State Machine',
+          style: TextStyle(fontSize: MediaQuery.of(context).size.height * .02),
+        ),
       ),
       body: Center(
-        child: Row(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FlatButton(
-              child: Text('Abrir'),
-              onPressed: () => open(),
-            ),
-            FlatButton(
-              child: Text('Fechar'),
-              onPressed: () => close(),
-            ),
-            Column(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                StreamBuilder<String>(
-                  stream: stateMachine.onStateChange
-                      .map((event) => event.toString()),
-                  builder: (context, snapshot) {
-                    return Text(snapshot.data);
+                FlatButton(
+                  child: Text('Abrir'),
+                  onPressed: () {
+                    print('Aberta? ${isOpen()}');
+                    try {
+                      open();
+                      _errorStream.add('');
+                    } on stm.IllegalStateTransition catch (e) {
+                      _errorStream.add(e.message);
+                    }
                   },
-                )
+                ),
+                FlatButton(
+                  child: Text('Fechar'),
+                  onPressed: () {
+                    try {
+                      close();
+                      _errorStream.add('');
+                    } on stm.IllegalStateTransition catch (e) {
+                      _errorStream.add(e.message);
+                    }
+                  },
+                ),
               ],
+            ),
+            StreamBuilder<String>(
+              initialData: 'Idle',
+              stream: stateMachine.onStateChange
+                  .map((event) => event.to.toString()),
+              builder: (context, snapshot) {
+                return Text(
+                  'Estado: \n' + snapshot.data,
+                  overflow: TextOverflow.clip,
+                  textAlign: TextAlign.center,
+                );
+              },
+            ),
+            SizedBox(
+              height: 40,
+            ),
+            StreamBuilder<String>(
+              stream: _errorStream.stream,
+              builder: (context, snapshot) {
+                if (snapshot.hasData)
+                  return Text(
+                    snapshot.data,
+                    style: TextStyle(color: Colors.redAccent),
+                  );
+                else
+                  return Container();
+              },
             ),
           ],
         ),
