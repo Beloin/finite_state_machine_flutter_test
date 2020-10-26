@@ -67,16 +67,6 @@ class _InputStatePageState extends State<InputStatePage> {
     return new Scaffold(
       appBar: new AppBar(
         title: new Text('State machine + Inputs'),
-        actions: [
-          new IconButton(
-            icon: Icon(Icons.arrow_forward_ios),
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => HomePage3(),
-              ),
-            ),
-          ),
-        ],
       ),
       body: new Column(
         mainAxisAlignment: MainAxisAlignment.center,
