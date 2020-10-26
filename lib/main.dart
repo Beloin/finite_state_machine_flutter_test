@@ -25,7 +25,7 @@ class ChoosePage extends StatelessWidget {
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           FlatButton(
             child: Text('Teste Base - Sem Pacotes'),
