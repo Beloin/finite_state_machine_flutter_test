@@ -66,7 +66,7 @@ class IdleState extends DefaultState {
         changeState(new RecState(context));
         break;
       case LowBatteryEvent:
-        changeState(LowBatteryState(context));
+        changeState(new LowBatteryState(context));
         break;
       case TimeEvent:
         changeState(new TimeState(context));
@@ -198,5 +198,27 @@ class Time2State extends DefaultState {
         break;
       default:
     }
+  }
+}
+
+/// Estado para fazer alguma ação.
+class HappyState extends DefaultState {
+  HappyState(Machine context) : super(context);
+
+  @override
+  void changeState(DefaultState newState) {
+    // TODO: implement changeState
+  }
+
+  @override
+  void receiveEvent(Event event) {
+    // TODO: implement receiveEvent
+  }
+
+  @override
+  Future<void> run() async {
+    super.run();
+    print('Atuando!');
+    print('Finalizado');
   }
 }

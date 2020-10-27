@@ -4,6 +4,7 @@ import 'package:finite_state_machine_test/util/states.dart';
 
 import 'events.dart';
 
+/// TODO: VER IMPLEMENTAÇÃO COM STREAMS
 class Machine {
   DefaultState _currentState;
 
@@ -29,4 +30,6 @@ class Machine {
     _eventsController.add(event);
     _currentState.receiveEvent(event);
   }
+
+  void addEventToSubMachine(Event event) {}
 }
