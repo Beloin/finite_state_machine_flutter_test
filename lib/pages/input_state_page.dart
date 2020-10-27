@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:state_machine/state_machine.dart' as stm;
 
-import 'home_page_3.dart';
 
 class InputStatePage extends StatefulWidget {
   InputStatePage({Key key}) : super(key: key);

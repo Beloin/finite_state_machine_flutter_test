@@ -1,4 +1,5 @@
 import 'events.dart';
+import 'machine.dart';
 
 abstract class StateActions {
   void run();
@@ -6,9 +7,9 @@ abstract class StateActions {
 }
 
 abstract class DefaultState implements StateActions {
-  final String name;
+  final Machine context;
 
-  DefaultState(this.name);
+  DefaultState(this.context);
 
   DateTime _startTime;
   DateTime _finishTime;
@@ -23,27 +24,29 @@ abstract class DefaultState implements StateActions {
   /// Atenção, antes de qualquer ação, chamar [super.run()]
   void run() {
     _startTime = new DateTime.now();
+    print('Rodando ${this.runtimeType}');
   }
 
   /// Cancela o estado atual.
   /// Atenção, antes de qualquer ação, chamar [super.cancel()]
   void cancel() {
     _finishTime = new DateTime.now();
+    print('Cancelou ${this.runtimeType}');
   }
 
   /// Muda o Estado
-  void changeState();
+  void changeState(DefaultState newState);
 
   /// Recebe o evento de mudança
   void receiveEvent(Event event);
 }
 
 class IdleState extends DefaultState {
-  IdleState(String name) : super(name);
+  IdleState(Machine context) : super(context);
 
   @override
-  void changeState() {
-    // TODO: implement changeState
+  void changeState(DefaultState newState) {
+    context.currentState = newState;
   }
 
   @override
@@ -58,18 +61,30 @@ class IdleState extends DefaultState {
 
   @override
   void receiveEvent(Event event) {
-    // TODO: implement event
+    switch (event.runtimeType) {
+      case RecEvent:
+        changeState(new RecState(context));
+        break;
+      case LowBatteryEvent:
+        changeState(LowBatteryState(context));
+        break;
+      case TimeEvent:
+        changeState(new TimeState(context));
+        break;
+      case Time2Event:
+        changeState(new Time2State(context));
+        break;
+      default:
+    }
   }
-
-
 }
 
 class LowBatteryState extends DefaultState {
-  LowBatteryState(String name) : super(name);
+  LowBatteryState(Machine context) : super(context);
 
   @override
-  void changeState() {
-    // TODO: implement changeState
+  void changeState(DefaultState newState) {
+    context.currentState = newState;
   }
 
   @override
@@ -84,8 +99,104 @@ class LowBatteryState extends DefaultState {
 
   @override
   void receiveEvent(Event event) {
-    // TODO: implement event
+    if (event is BackToIdleEvent) {
+      changeState(new IdleState(context));
+    }
+  }
+}
+
+class RecState extends DefaultState {
+  RecState(Machine context) : super(context);
+
+  @override
+  void changeState(DefaultState newState) {
+    context.currentState = newState;
   }
 
+  @override
+  void run() {
+    super.run();
+  }
 
+  @override
+  void cancel() {
+    super.cancel();
+  }
+
+  @override
+  void receiveEvent(Event event) {
+    switch (event.runtimeType) {
+      case LowBatteryEvent:
+        changeState(new LowBatteryState(context));
+        break;
+      case BackToIdleEvent:
+        changeState(new IdleState(context));
+        break;
+      default:
+    }
+  }
+}
+
+class TimeState extends DefaultState {
+  TimeState(Machine context) : super(context);
+
+  @override
+  void changeState(DefaultState newState) {
+    context.currentState = newState;
+  }
+
+  @override
+  void run() {
+    super.run();
+  }
+
+  @override
+  void cancel() {
+    super.cancel();
+  }
+
+  @override
+  void receiveEvent(Event event) {
+    switch (event.runtimeType) {
+      case LowBatteryEvent:
+        changeState(new LowBatteryState(context));
+        break;
+      case BackToIdleEvent:
+        changeState(new IdleState(context));
+        break;
+      default:
+    }
+  }
+}
+
+class Time2State extends DefaultState {
+  Time2State(Machine context) : super(context);
+
+  @override
+  void changeState(DefaultState newState) {
+    context.currentState = newState;
+  }
+
+  @override
+  void run() {
+    super.run();
+  }
+
+  @override
+  void cancel() {
+    super.cancel();
+  }
+
+  @override
+  void receiveEvent(Event event) {
+    switch (event.runtimeType) {
+      case LowBatteryEvent:
+        changeState(new LowBatteryState(context));
+        break;
+      case BackToIdleEvent:
+        changeState(new IdleState(context));
+        break;
+      default:
+    }
+  }
 }
