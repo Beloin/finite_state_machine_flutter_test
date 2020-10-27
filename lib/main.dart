@@ -1,9 +1,9 @@
-import 'package:finite_state_machine_test/home_page_3.dart';
-import 'package:finite_state_machine_test/input_state_page.dart';
+import 'package:finite_state_machine_test/pages/home_page_3.dart';
+import 'package:finite_state_machine_test/pages/input_state_page.dart';
 import 'package:flutter/material.dart';
 
-import 'home_page.dart';
-import 'home_page_2.dart';
+import 'pages/home_page.dart';
+import 'pages/home_page_2.dart';
 
 void main() => runApp(MyApp());
 
@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'State Machine Brute Test',
+      title: 'State Machine Test',
       home: ChoosePage(),
     );
   }

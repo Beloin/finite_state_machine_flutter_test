@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:finite_state_machine_test/input_state_page.dart';
 import 'package:flutter/material.dart';
 import 'package:state_machine/state_machine.dart' as stm;
 
