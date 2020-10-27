@@ -31,5 +31,7 @@ class Machine {
     _currentState.receiveEvent(event);
   }
 
-  void addEventToSubMachine(Event event) {}
+  void addEventToSubMachine(Event event) {
+    _currentState.machine.addEvent(event);
+  }
 }
