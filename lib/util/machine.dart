@@ -8,8 +8,6 @@ import 'events.dart';
 class Machine {
   DefaultState _currentState;
 
-  StreamController<Event> _eventsController = new StreamController();
-
   Machine() {
     currentState = new IdleState(this);
   }
@@ -27,11 +25,6 @@ class Machine {
   }
 
   void addEvent(Event event) {
-    _eventsController.add(event);
     _currentState.receiveEvent(event);
-  }
-
-  void addEventToSubMachine(Event event) {
-    _currentState.machine.addEvent(event);
   }
 }

@@ -219,6 +219,13 @@ class HappyState extends DefaultState {
   Future<void> run() async {
     super.run();
     print('Atuando!');
+    await Future.delayed(Duration(seconds: 10));
     print('Finalizado');
+  }
+
+  @override
+  void cancel() {
+    // TODO: implement cancel
+    super.cancel();
   }
 }
