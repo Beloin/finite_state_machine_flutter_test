@@ -3,13 +3,18 @@ import 'dart:async';
 import 'package:finite_state_machine_test/util/states.dart';
 
 import 'events.dart';
+import 'states.dart';
+import 'states.dart';
+import 'states.dart';
 
 /// TODO: VER IMPLEMENTAÇÃO COM STREAMS
 class Machine {
   DefaultState _currentState;
 
-  Machine() {
-    currentState = new IdleState(this);
+  Machine([DefaultState startState, bool defaultStart = false]) {
+    if (defaultStart) {
+      currentState = startState == null ? new IdleState(this) : startState;
+    }
   }
 
   /// Muda o estado atual da máquina

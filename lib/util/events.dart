@@ -26,3 +26,7 @@ class Time2Event extends Event {
 class BackToIdleEvent extends Event {
   BackToIdleEvent(String reason, DateTime time) : super(reason, time);
 }
+
+class DanceEvent extends Event {
+  DanceEvent(String reason, DateTime time) : super(reason, time);
+}

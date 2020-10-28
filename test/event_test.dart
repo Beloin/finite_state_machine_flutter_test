@@ -1,6 +1,8 @@
 import 'package:finite_state_machine_test/util/events.dart';
 import 'package:finite_state_machine_test/util/machine.dart';
 
+import '../lib/util/states.dart';
+
 main() async {
   Machine maquina = new Machine();
 

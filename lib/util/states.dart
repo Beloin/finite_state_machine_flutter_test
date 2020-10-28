@@ -1,9 +1,17 @@
 import 'events.dart';
+import 'events.dart';
+import 'machine.dart';
+import 'machine.dart';
 import 'machine.dart';
 
 abstract class StateActions {
   void run();
   void cancel();
+}
+
+abstract class HasMachine {
+  Machine configureMachine();
+  Machine internalMachine;
 }
 
 abstract class DefaultState implements StateActions {
@@ -21,6 +29,7 @@ abstract class DefaultState implements StateActions {
   DateTime get finishTime => _finishTime;
 
   /// O método que roda nesse Estado.
+  ///
   /// Atenção, antes de qualquer ação, chamar [super.run()]
   void run() {
     _startTime = new DateTime.now();
@@ -28,6 +37,7 @@ abstract class DefaultState implements StateActions {
   }
 
   /// Cancela o estado atual.
+  ///
   /// Atenção, antes de qualquer ação, chamar [super.cancel()]
   void cancel() {
     _finishTime = new DateTime.now();
@@ -39,6 +49,47 @@ abstract class DefaultState implements StateActions {
 
   /// Recebe o evento de mudança
   void receiveEvent(Event event);
+}
+
+abstract class StateWithMachine extends DefaultState implements HasMachine {
+  StateWithMachine(Machine context) : super(context);
+
+  void addEventSubMachine(Event event);
+
+  @override
+  void receiveEvent(Event event) {
+    addEventSubMachine(event);
+  }
+}
+
+class IdleState2 extends StateWithMachine {
+  @override
+  Machine internalMachine;
+
+  IdleState2(Machine context) : super(context);
+
+  @override
+  void addEventSubMachine(Event event) {
+    // TODO: implement addEventSubMachine
+    internalMachine.addEvent(event);
+  }
+
+  @override
+  void changeState(DefaultState newState) {
+    // TODO: implement changeState
+  }
+
+  @override
+  Machine configureMachine() {
+    // TODO: implement configureMachine
+    throw UnimplementedError();
+  }
+
+  @override
+  void receiveEvent(Event event) {
+    // TODO: implement receiveEvent
+    super.receiveEvent(event);
+  }
 }
 
 class IdleState extends DefaultState {
@@ -211,9 +262,7 @@ class HappyState extends DefaultState {
   }
 
   @override
-  void receiveEvent(Event event) {
-    // TODO: implement receiveEvent
-  }
+  void receiveEvent(Event event) {}
 
   @override
   Future<void> run() async {
