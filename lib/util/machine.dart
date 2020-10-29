@@ -24,6 +24,7 @@ class Machine {
     } else if (_currentState.runtimeType != newState.runtimeType) {
       cancelCurrentState();
       _currentState = newState;
+      runCurrentState();
     }
   }
 

@@ -7,7 +7,8 @@ abstract class StateActions {
 }
 
 abstract class HasMachine {
-  Machine configureMachine();
+  /// Configure a máquina de estados!
+  void configureMachine();
   Machine internalMachine;
 }
 
@@ -44,13 +45,14 @@ abstract class DefaultState implements StateActions {
   /// Muda o Estado
   void changeState(DefaultState newState);
 
-  /// Recebe o evento de mudança
+  /// Recebe o evento de mudança.
+  /// Lembrar de sempre chamar o super.
   void receiveEvent(Event event);
 }
 
 abstract class StateWithMachine extends DefaultState implements HasMachine {
   StateWithMachine(Machine context) : super(context) {
-    internalMachine = configureMachine();
+    configureMachine();
   }
 
   void addEventSubMachine(Event event);
@@ -69,6 +71,7 @@ class IdleState2 extends StateWithMachine {
 
   @override
   void addEventSubMachine(Event event) {
+    print('Adicionado event submachine');
     internalMachine.addEvent(event);
   }
 
@@ -81,16 +84,20 @@ class IdleState2 extends StateWithMachine {
   }
 
   @override
-  void changeState(DefaultState newState) {}
+  void changeState(DefaultState newState) {
+    context.currentState = newState;
+  }
 
   @override
   Machine configureMachine() {
-    var _internalMachine = new Machine(new HappyState(internalMachine), true);
-    return _internalMachine;
+    internalMachine = new Machine();
+    internalMachine.currentState = new HappyState(internalMachine);
+    return internalMachine;
   }
 
   @override
   void receiveEvent(Event event) {
+    super.receiveEvent(event);
     switch (event.runtimeType) {
       case RecEvent:
         changeState(new RecState(context));
@@ -167,9 +174,7 @@ class LowBatteryState extends DefaultState {
 
   @override
   void receiveEvent(Event event) {
-    if (event is BackToIdleEvent) {
-      changeState(new IdleState2(context));
-    }
+    if (event is BackToIdleEvent) changeState(new IdleState2(context));
   }
 }
 
@@ -287,7 +292,7 @@ class HappyState extends DefaultState {
   Future<void> run() async {
     super.run();
     print('Atuando!');
-    await Future.delayed(Duration(seconds: 10));
+    await Future.delayed(Duration(seconds: 2));
     print('Finalizado');
   }
 
@@ -314,7 +319,7 @@ class DanceState extends DefaultState {
   Future<void> run() async {
     super.run();
     print('Esperando');
-    await Future.delayed(Duration(seconds: 5));
+    await Future.delayed(Duration(seconds: 2));
     print('Cabou');
   }
 }
