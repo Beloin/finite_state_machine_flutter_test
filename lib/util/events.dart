@@ -30,3 +30,7 @@ class BackToIdleEvent extends Event {
 class DanceEvent extends Event {
   DanceEvent(String reason, DateTime time) : super(reason, time);
 }
+
+class HappyEvent extends Event {
+  HappyEvent(String reason, DateTime time) : super(reason, time);
+}

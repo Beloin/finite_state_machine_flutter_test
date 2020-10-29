@@ -13,7 +13,7 @@ class Machine {
 
   Machine([DefaultState startState, bool defaultStart = false]) {
     if (defaultStart) {
-      currentState = startState == null ? new IdleState(this) : startState;
+      currentState = startState == null ? new IdleState2(this) : startState;
     }
   }
 
@@ -21,12 +21,18 @@ class Machine {
   set currentState(DefaultState newState) {
     if (_currentState == null) {
       _currentState = newState;
-      _currentState.run();
     } else if (_currentState.runtimeType != newState.runtimeType) {
-      _currentState.cancel();
+      cancelCurrentState();
       _currentState = newState;
-      _currentState.run();
     }
+  }
+
+  void runCurrentState() {
+    _currentState.run();
+  }
+
+  void cancelCurrentState() {
+    _currentState.cancel();
   }
 
   void addEvent(Event event) {

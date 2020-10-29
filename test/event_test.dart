@@ -13,9 +13,5 @@ main() async {
   await Future.delayed(Duration(seconds: 2));
   maquina.addEvent(new BackToIdleEvent('Voltando ao Idle', DateTime.now()));
   await Future.delayed(Duration(seconds: 2));
-  maquina.addEvent(new Time2Event('Time2', DateTime.now()));
-  await Future.delayed(Duration(seconds: 2));
-  maquina.addEvent(new LowBatteryEvent('Bateria Fraca', DateTime.now()));
-  await Future.delayed(Duration(seconds: 2));
-  maquina.addEvent(new BackToIdleEvent('Voltando ao Idle', DateTime.now()));
+  maquina.addEvent(new )
 }

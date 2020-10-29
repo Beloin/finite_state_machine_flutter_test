@@ -1,7 +1,4 @@
 import 'events.dart';
-import 'events.dart';
-import 'machine.dart';
-import 'machine.dart';
 import 'machine.dart';
 
 abstract class StateActions {
@@ -52,7 +49,9 @@ abstract class DefaultState implements StateActions {
 }
 
 abstract class StateWithMachine extends DefaultState implements HasMachine {
-  StateWithMachine(Machine context) : super(context);
+  StateWithMachine(Machine context) : super(context) {
+    internalMachine = configureMachine();
+  }
 
   void addEventSubMachine(Event event);
 
@@ -70,25 +69,43 @@ class IdleState2 extends StateWithMachine {
 
   @override
   void addEventSubMachine(Event event) {
-    // TODO: implement addEventSubMachine
     internalMachine.addEvent(event);
   }
 
   @override
-  void changeState(DefaultState newState) {
-    // TODO: implement changeState
+  Future<void> run() async {
+    super.run();
+    print('Waiting to start HappyState');
+    await Future.delayed(Duration(seconds: 2));
+    internalMachine.runCurrentState();
   }
 
   @override
+  void changeState(DefaultState newState) {}
+
+  @override
   Machine configureMachine() {
-    // TODO: implement configureMachine
-    throw UnimplementedError();
+    var _internalMachine = new Machine(new HappyState(internalMachine), true);
+    return _internalMachine;
   }
 
   @override
   void receiveEvent(Event event) {
-    // TODO: implement receiveEvent
-    super.receiveEvent(event);
+    switch (event.runtimeType) {
+      case RecEvent:
+        changeState(new RecState(context));
+        break;
+      case LowBatteryEvent:
+        changeState(new LowBatteryState(context));
+        break;
+      case TimeEvent:
+        changeState(new TimeState(context));
+        break;
+      case Time2Event:
+        changeState(new Time2State(context));
+        break;
+      default:
+    }
   }
 }
 
@@ -151,7 +168,7 @@ class LowBatteryState extends DefaultState {
   @override
   void receiveEvent(Event event) {
     if (event is BackToIdleEvent) {
-      changeState(new IdleState(context));
+      changeState(new IdleState2(context));
     }
   }
 }
@@ -181,7 +198,7 @@ class RecState extends DefaultState {
         changeState(new LowBatteryState(context));
         break;
       case BackToIdleEvent:
-        changeState(new IdleState(context));
+        changeState(new IdleState2(context));
         break;
       default:
     }
@@ -213,7 +230,7 @@ class TimeState extends DefaultState {
         changeState(new LowBatteryState(context));
         break;
       case BackToIdleEvent:
-        changeState(new IdleState(context));
+        changeState(new IdleState2(context));
         break;
       default:
     }
@@ -245,7 +262,7 @@ class Time2State extends DefaultState {
         changeState(new LowBatteryState(context));
         break;
       case BackToIdleEvent:
-        changeState(new IdleState(context));
+        changeState(new IdleState2(context));
         break;
       default:
     }
@@ -258,11 +275,13 @@ class HappyState extends DefaultState {
 
   @override
   void changeState(DefaultState newState) {
-    // TODO: implement changeState
+    context.currentState = newState;
   }
 
   @override
-  void receiveEvent(Event event) {}
+  void receiveEvent(Event event) {
+    if (event is DanceEvent) changeState(new DanceState(context));
+  }
 
   @override
   Future<void> run() async {
@@ -274,7 +293,28 @@ class HappyState extends DefaultState {
 
   @override
   void cancel() {
-    // TODO: implement cancel
     super.cancel();
+  }
+}
+
+class DanceState extends DefaultState {
+  DanceState(Machine context) : super(context);
+
+  @override
+  void changeState(DefaultState newState) {
+    context.currentState = newState;
+  }
+
+  @override
+  void receiveEvent(Event event) {
+    if (event is HappyEvent) changeState(new HappyState(context));
+  }
+
+  @override
+  Future<void> run() async {
+    super.run();
+    print('Esperando');
+    await Future.delayed(Duration(seconds: 5));
+    print('Cabou');
   }
 }
