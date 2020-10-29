@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'events.dart';
 import 'machine.dart';
 
@@ -157,6 +159,9 @@ class IdleState extends DefaultState {
 class LowBatteryState extends DefaultState {
   LowBatteryState(Machine context) : super(context);
 
+  StreamController controller;
+  StreamSubscription listener;
+
   @override
   void changeState(DefaultState newState) {
     context.currentState = newState;
@@ -165,11 +170,21 @@ class LowBatteryState extends DefaultState {
   @override
   void run() {
     super.run();
+    controller = new StreamController()
+      ..addStream(Stream<String>.periodic(Duration(milliseconds: 500), (v) {
+        return 'Estou com pouca bateria!';
+      }));
+
+    listener = controller.stream.listen((event) {
+      print(event);
+    });
   }
 
   @override
-  void cancel() {
+  Future<void> cancel() async {
     super.cancel();
+    await listener.cancel();
+    await controller.close();
   }
 
   @override
@@ -278,6 +293,9 @@ class Time2State extends DefaultState {
 class HappyState extends DefaultState {
   HappyState(Machine context) : super(context);
 
+  StreamController controller;
+  StreamSubscription listener;
+
   @override
   void changeState(DefaultState newState) {
     context.currentState = newState;
@@ -291,14 +309,21 @@ class HappyState extends DefaultState {
   @override
   Future<void> run() async {
     super.run();
-    print('Atuando!');
-    await Future.delayed(Duration(seconds: 2));
-    print('Finalizado');
+    controller = new StreamController()
+      ..addStream(Stream<String>.periodic(Duration(milliseconds: 500), (v) {
+        return 'Estou Happy!!!';
+      }));
+
+    listener = controller.stream.listen((event) {
+      print(event);
+    });
   }
 
   @override
-  void cancel() {
+  Future<void> cancel() async {
     super.cancel();
+    await listener.cancel();
+    await controller.close();
   }
 }
 
@@ -318,7 +343,7 @@ class DanceState extends DefaultState {
   @override
   Future<void> run() async {
     super.run();
-    print('Esperando');
+    print('Dançando!');
     await Future.delayed(Duration(seconds: 2));
     print('Cabou');
   }
