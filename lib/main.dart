@@ -30,23 +30,23 @@ class ChoosePage extends StatelessWidget {
         children: [
           FlatButton(
             child: Text('Teste Base - Sem Pacotes'),
-            onPressed: () => push(HomePage(), context),
+            onPressed: () async => push(HomePage(), context),
           ),
           FlatButton(
             child: Text('Teste Base - Máquina de Estados'),
-            onPressed: () => push(HomePage2(), context),
+            onPressed: () async => push(HomePage2(), context),
           ),
           FlatButton(
             child: Text('Máquina de Estados + Inputs + Stream String'),
-            onPressed: () => push(InputStatePage(), context),
+            onPressed: () async => push(InputStatePage(), context),
           ),
           FlatButton(
             child: Text('Máquina de Estados + Input + StreamEvents'),
-            onPressed: () => push(HomePage3(), context),
+            onPressed: () async => push(HomePage3(), context),
           ),
           FlatButton(
             child: Text('Máquina de estados Final'),
-            onPressed: () => push(EventStatePage(), context),
+            onPressed: () async => push(EventStatePage(), context),
           ),
         ],
       ),

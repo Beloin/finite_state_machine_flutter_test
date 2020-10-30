@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import 'package:finite_state_machine_test/util/actions.dart';
+
 import 'events.dart';
 import 'machine.dart';
 
@@ -51,7 +55,26 @@ abstract class DefaultState implements StateActions {
 }
 
 class IdleState extends DefaultState {
-  IdleState(Machine context) : super(context);
+  IdleState(Machine context) : super(context) {
+    this.actions = [
+      new HappyAction(_sink),
+      new DanceAction(_sink),
+    ];
+
+    _listener = _streamController.stream.listen((event) {
+      print('Valor Dentro de Idle: $event');
+    });
+  }
+
+  StreamSubscription _listener;
+
+  StreamController _streamController = new StreamController.broadcast();
+
+  Sink get _sink => _streamController.sink;
+
+  Stream get actionStream => _streamController.stream;
+
+  List<Action> actions;
 
   @override
   void changeState(DefaultState newState) {
@@ -59,13 +82,17 @@ class IdleState extends DefaultState {
   }
 
   @override
-  void run() {
+  Future<void> run() async {
     super.run();
+    for (var i = 0; i < actions.length; i++) {
+      await actions[i].runAction();
+    }
   }
 
   @override
   void cancel() {
     super.cancel();
+    _listener.cancel().whenComplete(() => _streamController.close());
   }
 
   @override
