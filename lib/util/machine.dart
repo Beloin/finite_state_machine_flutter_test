@@ -12,7 +12,7 @@ class Machine {
 
   Machine([bool defaultStart = false, DefaultState startState]) {
     if (defaultStart) {
-      currentState = startState == null ? new IdleState2(this) : startState;
+      currentState = startState == null ? new IdleState(this) : startState;
     }
   }
 

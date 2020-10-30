@@ -56,17 +56,6 @@ class _EventStatePageState extends State<EventStatePage> {
             SizedBox(
               height: 10,
             ),
-            Text('Atributos Das SubMachines'),
-            FlatButton(
-              onPressed: () =>
-                  machine.addEvent(new HappyEvent('Happy', DateTime.now())),
-              child: Text('Happy Event'),
-            ),
-            FlatButton(
-              onPressed: () =>
-                  machine.addEvent(new DanceEvent('Dance!', DateTime.now())),
-              child: Text('Dance Event'),
-            ),
           ],
         ),
       ),
