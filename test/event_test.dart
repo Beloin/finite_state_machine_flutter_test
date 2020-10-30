@@ -2,7 +2,7 @@ import 'package:finite_state_machine_test/util/events.dart';
 import 'package:finite_state_machine_test/util/machine.dart';
 
 main() async {
-  Machine maquina = new Machine(null, true);
+  Machine maquina = new Machine(true, null);
 
   maquina.runCurrentState();
   await Future.delayed(Duration(seconds: 8));

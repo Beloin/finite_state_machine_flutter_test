@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'events.dart';
 import 'machine.dart';
 
@@ -33,6 +31,7 @@ abstract class DefaultState implements StateActions {
   /// Atenção, antes de qualquer ação, chamar [super.run()]
   void run() {
     _startTime = new DateTime.now();
+    context.stateSink.add(this);
     print('Rodando ${this.runtimeType}');
   }
 
@@ -50,6 +49,11 @@ abstract class DefaultState implements StateActions {
   /// Recebe o evento de mudança.
   /// Lembrar de sempre chamar o super.
   void receiveEvent(Event event);
+
+  @override
+  String toString() {
+    return '${this.runtimeType} -> Começou: ${this._startTime}';
+  }
 }
 
 abstract class StateWithMachine extends DefaultState implements HasMachine {
@@ -78,15 +82,14 @@ class IdleState2 extends StateWithMachine {
   }
 
   @override
-  Future<void> run() async {
+  run() {
     super.run();
-    print('Waiting to start HappyState');
-    await Future.delayed(Duration(seconds: 2));
     internalMachine.runCurrentState();
   }
 
   @override
   void changeState(DefaultState newState) {
+    internalMachine.cancelCurrentState();
     context.currentState = newState;
   }
 
@@ -159,9 +162,6 @@ class IdleState extends DefaultState {
 class LowBatteryState extends DefaultState {
   LowBatteryState(Machine context) : super(context);
 
-  StreamController controller;
-  StreamSubscription listener;
-
   @override
   void changeState(DefaultState newState) {
     context.currentState = newState;
@@ -170,21 +170,11 @@ class LowBatteryState extends DefaultState {
   @override
   void run() {
     super.run();
-    controller = new StreamController()
-      ..addStream(Stream<String>.periodic(Duration(milliseconds: 500), (v) {
-        return 'Estou com pouca bateria!';
-      }));
-
-    listener = controller.stream.listen((event) {
-      print(event);
-    });
   }
 
   @override
-  Future<void> cancel() async {
+  void cancel() {
     super.cancel();
-    await listener.cancel();
-    await controller.close();
   }
 
   @override
@@ -293,9 +283,6 @@ class Time2State extends DefaultState {
 class HappyState extends DefaultState {
   HappyState(Machine context) : super(context);
 
-  StreamController controller;
-  StreamSubscription listener;
-
   @override
   void changeState(DefaultState newState) {
     context.currentState = newState;
@@ -307,23 +294,13 @@ class HappyState extends DefaultState {
   }
 
   @override
-  Future<void> run() async {
+  void run() {
     super.run();
-    controller = new StreamController()
-      ..addStream(Stream<String>.periodic(Duration(milliseconds: 500), (v) {
-        return 'Estou Happy!!!';
-      }));
-
-    listener = controller.stream.listen((event) {
-      print(event);
-    });
   }
 
   @override
-  Future<void> cancel() async {
+  void cancel() {
     super.cancel();
-    await listener.cancel();
-    await controller.close();
   }
 }
 
@@ -341,10 +318,8 @@ class DanceState extends DefaultState {
   }
 
   @override
-  Future<void> run() async {
+  void run() {
     super.run();
     print('Dançando!');
-    await Future.delayed(Duration(seconds: 2));
-    print('Cabou');
   }
 }

@@ -2,6 +2,7 @@ import 'package:finite_state_machine_test/pages/home_page_3.dart';
 import 'package:finite_state_machine_test/pages/input_state_page.dart';
 import 'package:flutter/material.dart';
 
+import 'pages/event_state_page.dart';
 import 'pages/home_page.dart';
 import 'pages/home_page_2.dart';
 
@@ -43,10 +44,14 @@ class ChoosePage extends StatelessWidget {
             child: Text('Máquina de Estados + Input + StreamEvents'),
             onPressed: () => push(HomePage3(), context),
           ),
+          FlatButton(
+            child: Text('Máquina de estados Final'),
+            onPressed: () => push(EventStatePage(), context),
+          ),
         ],
       ),
     );
-  }
+  } // EventStatePage
 
   void push(Widget pageTo, BuildContext context) {
     Navigator.of(context).push(

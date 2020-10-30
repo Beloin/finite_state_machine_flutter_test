@@ -4,22 +4,21 @@ import 'package:finite_state_machine_test/util/states.dart';
 
 import 'events.dart';
 import 'states.dart';
-import 'states.dart';
-import 'states.dart';
 
-/// TODO: VER IMPLEMENTAÇÃO COM STREAMS
 class Machine {
   DefaultState _currentState;
 
   StreamController<DefaultState> _stateController = new StreamController();
 
-  Machine([DefaultState startState, bool defaultStart = false]) {
+  Machine([bool defaultStart = false, DefaultState startState]) {
     if (defaultStart) {
       currentState = startState == null ? new IdleState2(this) : startState;
     }
   }
 
-  Stream get stateStream => _stateController.stream;
+  Stream<DefaultState> get stateStream => _stateController.stream;
+
+  Sink<DefaultState> get stateSink => _stateController.sink;
 
   /// Muda o estado atual da máquina
   set currentState(DefaultState newState) {
